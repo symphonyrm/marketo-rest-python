@@ -249,7 +249,13 @@ class MarketoClient:
                     'get_leads_export_job_status': self.get_leads_export_job_status,
                     'get_activities_export_job_status': self.get_activities_export_job_status,
                     'get_leads_export_job_file': self.get_leads_export_job_file,
-                    'get_activities_export_job_file': self.get_activities_export_job_file
+                    'get_activities_export_job_file': self.get_activities_export_job_file,
+                    'get_static_list_by_id': self.get_static_list_by_id,
+                    'update_static_list_metadata': self.update_static_list_metadata,
+                    'get_static_lists': self.get_static_lists,
+                    'create_static_list': self.create_static_list,
+                    'get_static_list_by_name': self.get_static_list_by_name,
+                    'delete_static_list': self.delete_static_list,
                 }
                 result = method_map[method](*args, **kargs)
             except MarketoException as e:
@@ -4896,3 +4902,131 @@ class MarketoClient:
 
     def get_activities_export_jobs_list(self):
         return self._get_export_jobs_list('activities')
+
+    # --------- STATIC LISTS ---------
+
+    def get_static_list_by_id(self, staticListId):
+        self.authenticate()
+        if id is None:
+            raise ValueError("Invalid argument: required argument id is none.")
+        args = {
+            'access_token': self.token
+        }
+        result = self._api_call(
+            'get', self.host + "/rest/asset/v1/staticList/" + str(staticListId) + ".json", args)
+        if result is None:
+            raise Exception("Empty Response")
+        if not result['success']:
+            raise MarketoException(result['errors'][0])
+        return result['result']
+
+    def update_static_list_metadata(self, staticListId, name=None, description=None):
+        self.authenticate()
+        if staticListId is None:
+            raise ValueError(
+                "Invalid argument: required argument staticListId is none.")
+        data = {}
+        if name is not None:
+            data['name'] = name
+        if description is not None:
+            data['description'] = description
+        args = {
+            'access_token': self.token
+        }
+        result = self._api_call(
+            'post', self.host + "/rest/asset/v1/staticList/" + str(staticListId) + ".json", args, data)
+        if result is None:
+            raise Exception("Empty Response")
+        if not result['success']:
+            raise MarketoException(result['errors'][0])
+        return result['result']
+
+    def get_static_lists(self, folder=None, offset=None, maxReturn=None, earliestUpdatedAt=None, latestUpdatedAt=None):
+        self.authenticate()
+        args = {
+            'access_token': self.token
+        }
+        if folder is not None:
+            args['folder'] = folder
+        if offset is not None:
+            args['offset'] = offset
+        if maxReturn is not None:
+            args['maxReturn'] = maxReturn
+        if earliestUpdatedAt is not None:
+            args['earliestUpdatedAt'] = earliestUpdatedAt
+        if latestUpdatedAt is not None:
+            args['latestUpdatedAt'] = latestUpdatedAt
+        result_list = []
+        while True:
+            self.authenticate()
+            # for long-running processes, this updates the access token
+            args['access_token'] = self.token
+            result = self._api_call(
+                'get', self.host + "/rest/asset/v1/staticLists.json", args)
+            if result is None:
+                raise Exception("Empty Response")
+            if not result['success']:
+                raise MarketoException(result['errors'][0])
+            result_list.extend(result['result'])
+            if len(result['result']) == 0 or 'nextPageToken' not in result:
+                break
+            args['nextPageToken'] = result['nextPageToken']
+        return result_list
+
+    def create_static_list(self, name, parentId, parentType, description=None):
+        self.authenticate()
+        if name is None:
+            raise ValueError(
+                "Invalid argument: required argument name is none.")
+        if parentId is None:
+            raise ValueError(
+                "Invalid argument: required argument parentId is none.")
+        if parentType is None:
+            raise ValueError(
+                "Invalid argument: parentType should be 'Folder' or 'Parent'")
+        args = {
+            'access_token': self.token,
+            'name': name,
+            'parent': "{'id': " + str(parentId) + ", 'type': " + parentType + "}"
+        }
+        if description is not None:
+            args['description'] = description
+        result = self._api_call(
+            'post', self.host + "/rest/asset/v1/staticList.json", args)
+        if result is None:
+            raise Exception("Empty Response")
+        if not result['success']:
+            raise MarketoException(result['errors'][0])
+        return result['result']
+
+    def get_static_list_by_name(self, name):
+        self.authenticate()
+        if name is None:
+            raise ValueError(
+                "Invalid argument: required argument name is none.")
+        args = {
+            'access_token': self.token,
+            'name': name
+        }
+        result = self._api_call(
+            'get', self.host + "/rest/asset/v1/staticList/byName.json", args)
+        if result is None:
+            raise Exception("Empty Response")
+        if not result['success']:
+            raise MarketoException(result['errors'][0])
+        return result['result']
+
+    def delete_static_list(self, staticListId):
+        self.authenticate()
+        if staticListId is None:
+            raise ValueError("Invalid argument: required argument staticListId is none.")
+        args = {
+            'access_token': self.token,
+        }
+        result = self._api_call(
+            'post', self.host + "/rest/asset/v1/staticList/" + str(staticListId) + "/delete.json", args)
+        if result is None:
+            raise Exception("Empty Response")
+        if not result['success']:
+            raise MarketoException(result['errors'][0])
+        return result['result']
