@@ -4907,7 +4907,7 @@ class MarketoClient:
 
     def get_static_list_by_id(self, staticListId):
         self.authenticate()
-        if id is None:
+        if staticListId is None:
             raise ValueError("Invalid argument: required argument id is none.")
         args = {
             'access_token': self.token
