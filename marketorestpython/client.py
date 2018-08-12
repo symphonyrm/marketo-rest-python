@@ -3771,7 +3771,7 @@ class MarketoClient:
 
     # --------- PROGRAM ---------
 
-    def create_program(self, folderId, folderType, name, type, channel, description=None, tags=None, costs=None):
+    def create_program(self, folderId, folderType, name=None, type=None, channel=None, description=None, tags=None, costs=None):
         self.authenticate()
         if folderId is None:
             raise ValueError(
@@ -3779,22 +3779,18 @@ class MarketoClient:
         if folderType is None:
             raise ValueError(
                 "Invalid argument: required argument folderType is none.")
-        if name is None:
-            raise ValueError(
-                "Invalid argument: required argument name is none.")
-        if type is None:
-            raise ValueError(
-                "Invalid argument: required argument type is none.")
-        if channel is None:
-            raise ValueError(
-                "Invalid argument: required argument channel is none.")
+
         args = {
             'access_token': self.token,
             'folder': "{'id': " + str(folderId) + ", 'type': " + folderType + "}",
-            'name': name,
-            'type': type,
-            'channel': channel
         }
+
+        if name is not None:
+            args['name'] = name
+        if type is not None:
+            args['type'] = type
+        if channel is not None:
+            args['channel'] = channel
         if description is not None:
             args['description'] = description
         if tags is not None:
