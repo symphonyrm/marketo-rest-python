@@ -4937,13 +4937,14 @@ class MarketoClient:
             raise MarketoException(result['errors'][0])
         return result['result']
 
-    def get_static_lists(self, folder=None, offset=None, maxReturn=None, earliestUpdatedAt=None, latestUpdatedAt=None):
+    def get_static_lists(self, parentId=None, parentType=None, offset=None, maxReturn=None, earliestUpdatedAt=None, latestUpdatedAt=None):
         self.authenticate()
         args = {
             'access_token': self.token
         }
-        if folder is not None:
-            args['folder'] = folder
+        if parentId is not None and parentType is not None:
+            args['folder'] = "{'id': " + str(parentId) + ", 'type': " + parentType + "}"
+            # args['folder'] = folder
         if offset is not None:
             args['offset'] = offset
         if maxReturn is not None:
