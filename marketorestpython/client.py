@@ -4983,7 +4983,7 @@ class MarketoClient:
         args = {
             'access_token': self.token,
             'name': name,
-            'parent': "{'id': " + str(parentId) + ", 'type': " + parentType + "}"
+            'folder': "{'id': " + str(parentId) + ", 'type': " + parentType + "}"
         }
         if description is not None:
             args['description'] = description
