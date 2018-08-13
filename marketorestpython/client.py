@@ -4988,7 +4988,7 @@ class MarketoClient:
         if description is not None:
             args['description'] = description
         result = self._api_call(
-            'post', self.host + "/rest/asset/v1/staticList.json", args)
+            'post', self.host + "/rest/asset/v1/staticLists.json", args)
         if result is None:
             raise Exception("Empty Response")
         if not result['success']:
