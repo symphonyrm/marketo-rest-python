@@ -7,9 +7,9 @@ from marketorestpython.helper.exceptions import MarketoException
 
 def has_empty_warning(result):
     if 'result' not in result \
-            and 'warnings' in result \
-            and len(result['warnings']) \
-            and result['warnings'][0] == 'No assets found for the given search criteria.':
+        and 'warnings' in result \
+        and len(result['warnings']) \
+        and result['warnings'][0] == 'No assets found for the given search criteria.':
         return True
 
     return False
@@ -23,9 +23,9 @@ class MarketoClient:
     last_request_id = None  # intended to save last request id, but not used right now
 
     def __init__(self, munchkin_id, client_id, client_secret, api_limit=None):
-        assert(munchkin_id is not None)
-        assert(client_id is not None)
-        assert(client_secret is not None)
+        assert (munchkin_id is not None)
+        assert (client_id is not None)
+        assert (client_secret is not None)
         self.valid_until = None
         self.host = "https://" + munchkin_id + ".mktorest.com"
         self.client_id = client_id
@@ -273,7 +273,7 @@ class MarketoClient:
 
     def authenticate(self):
         if self.valid_until is not None and \
-                self.valid_until - time.time() >= 60:
+            self.valid_until - time.time() >= 60:
             return
         args = {
             'grant_type': 'client_credentials',
@@ -426,7 +426,8 @@ class MarketoClient:
             self.authenticate()
             # for long-running processes, this updates the access token
             args['access_token'] = self.token
-            result = self._api_call('post', self.host + "/rest/v1/leads/programs/" + str(programId) + ".json", args, data,
+            result = self._api_call('post', self.host + "/rest/v1/leads/programs/" + str(programId) + ".json", args,
+                                    data,
                                     mode='nojsondumps')
             if result is None:
                 raise Exception("Empty Response")
@@ -453,7 +454,8 @@ class MarketoClient:
             self.authenticate()
             # for long-running processes, this updates the access token
             args['access_token'] = self.token
-            result = self._api_call('post', self.host + "/rest/v1/leads/programs/" + str(programId) + ".json", args, data,
+            result = self._api_call('post', self.host + "/rest/v1/leads/programs/" + str(programId) + ".json", args,
+                                    data,
                                     mode='nojsondumps')
             if result is None:
                 raise Exception("Empty Response")
@@ -486,8 +488,8 @@ class MarketoClient:
         for leadId in leadIds:
             data['input'].append({'id': leadId})
         # result={}
-        #result['success'] = True
-        #result['result'] = data
+        # result['success'] = True
+        # result['result'] = data
         result = self._api_call(
             'post', self.host + "/rest/v1/leads/programs/" + str(id) + "/status.json", args, data)
         if not result['success']:
@@ -824,15 +826,15 @@ class MarketoClient:
                           for k, v in tokens.items()]
             data = {
                 'input': {'leads':
-                          leads_list,
+                              leads_list,
                           'tokens':
-                          token_list
+                              token_list
                           }
             }
         else:
             data = {
                 'input': {'leads':
-                          leads_list
+                              leads_list
                           }
             }
         result = self._api_call(
@@ -955,7 +957,7 @@ class MarketoClient:
         return result['nextPageToken']
 
     def process_lead_activity_until_datetime(self, result, untilDatetime):
-        latest_until_date = result[len(result)-1]['activityDate']
+        latest_until_date = result[len(result) - 1]['activityDate']
         result_until = datetime.strptime(
             latest_until_date, '%Y-%m-%dT%H:%M:%SZ')
         try:
@@ -965,7 +967,7 @@ class MarketoClient:
             try:
                 specified_until = datetime.strptime(untilDatetime, '%Y-%m-%d')
             except:
-                raise(
+                raise (
                     'incorrect format for untilDatetime, use YYYY-MM-DDTHH:MM:SS or YYYY-MM-DD')
         if result_until > specified_until:
             partial_result = []
@@ -1880,7 +1882,7 @@ class MarketoClient:
             args['status'] = status
         if folderId is not None:
             args['folder'] = "{'id': " + \
-                str(folderId) + ", 'type': " + folderType + "}"
+                             str(folderId) + ", 'type': " + folderType + "}"
         result = self._api_call(
             'get', self.host + "/rest/asset/v1/email/byName.json", args)
         if result is None:
@@ -1936,7 +1938,7 @@ class MarketoClient:
             args['status'] = status
         if folderId is not None:
             args['folder'] = "{'id': " + \
-                str(folderId) + ", 'type': " + folderType + "}"
+                             str(folderId) + ", 'type': " + folderType + "}"
         result_list = []
         offset = 0
         while True:
@@ -1989,16 +1991,16 @@ class MarketoClient:
         }
         if subject is not None:
             args['subject'] = '{"type":"' + type + \
-                '","value":"' + str(subject) + '"}'
+                              '","value":"' + str(subject) + '"}'
         if fromName is not None:
             args['fromName'] = '{"type":"' + type + \
-                '","value":"' + str(fromName) + '"}'
+                               '","value":"' + str(fromName) + '"}'
         if fromEmail is not None:
             args['fromEmail'] = '{"type":"' + type + \
-                '","value":"' + str(fromEmail) + '"}'
+                                '","value":"' + str(fromEmail) + '"}'
         if replyTo is not None:
             args['replyTO'] = '{"type":"' + type + \
-                '","value":"' + str(replyTo) + '"}'
+                              '","value":"' + str(replyTo) + '"}'
         result = self._api_call(
             'post', self.host + "/rest/asset/v1/email/" + str(id) + "/content.json", args)
         if result is None:
@@ -2223,7 +2225,8 @@ class MarketoClient:
     # -------LANDING PAGES ---------#
 
     def create_landing_page(self, name, folderId, folderType, template, description=None, title=None, keywords=None,
-                            robots=None, customHeadHTML=None, facebookOgTags=None, prefillForm=None, mobileEnabled=None):
+                            robots=None, customHeadHTML=None, facebookOgTags=None, prefillForm=None,
+                            mobileEnabled=None):
         self.authenticate()
         if name is None:
             raise ValueError(
@@ -2370,7 +2373,7 @@ class MarketoClient:
             args['status'] = status
         if folderId is not None:
             args['folder'] = "{'id': " + \
-                str(folderId) + ", 'type': " + folderType + "}"
+                             str(folderId) + ", 'type': " + folderType + "}"
         result_list = []
         offset = 0
         while True:
@@ -2381,7 +2384,7 @@ class MarketoClient:
                 'get', self.host + "/rest/asset/v1/landingPages.json", args)
             if result is None:
                 raise Exception("Empty Response")
-            #if not result['success']: raise MarketoException(result['errors'][0] + ". Request ID: " + result['requestId'])
+            # if not result['success']: raise MarketoException(result['errors'][0] + ". Request ID: " + result['requestId'])
             if not result['success']:
                 raise MarketoException(result['errors'][0])
             if 'result' in result:
@@ -2474,7 +2477,8 @@ class MarketoClient:
 
     def update_landing_page_content_section(self, id, contentId, type, value, index=None, backgroundColor=None,
                                             borderColor=None, borderStyle=None, borderWidth=None, height=None,
-                                            zIndex=None, left=None, opacity=None, top=None, width=None, hideDesktop=None,
+                                            zIndex=None, left=None, opacity=None, top=None, width=None,
+                                            hideDesktop=None,
                                             hideMobile=None, imageOpenNewWindow=None, linkUrl=None):
         self.authenticate()
         if id is None:
@@ -2527,7 +2531,8 @@ class MarketoClient:
             data['imageOpenNewWindow'] = imageOpenNewWindow
         if linkUrl is not None:
             data['linkUrl'] = linkUrl
-        result = self._api_call('post', self.host + "/rest/asset/v1/landingPage/" + str(id) + "/content/" + str(contentId) +
+        result = self._api_call('post',
+                                self.host + "/rest/asset/v1/landingPage/" + str(id) + "/content/" + str(contentId) +
                                 ".json", args, data, mode='nojsondumps')
         if result is None:
             raise Exception("Empty Response")
@@ -2545,7 +2550,8 @@ class MarketoClient:
         args = {
             'access_token': self.token
         }
-        result = self._api_call('post', self.host + "/rest/asset/v1/landingPage/" + str(id) + "/content/" + str(contentId) +
+        result = self._api_call('post',
+                                self.host + "/rest/asset/v1/landingPage/" + str(id) + "/content/" + str(contentId) +
                                 "/delete.json", args)
         if result is None:
             raise Exception("Empty Response")
@@ -2864,7 +2870,7 @@ class MarketoClient:
             args['status'] = status
         if folderId is not None:
             args['folder'] = "{'id': " + \
-                str(folderId) + ", 'type': " + folderType + "}"
+                             str(folderId) + ", 'type': " + folderType + "}"
         result_list = []
         offset = 0
         while True:
@@ -2961,7 +2967,8 @@ class MarketoClient:
             raise MarketoException(result['errors'][0])
         return result['result']
 
-    def update_form_field(self, id, fieldId, label=None, fieldType=None, labelWidth=None, fieldWidth=None, instructions=None,
+    def update_form_field(self, id, fieldId, label=None, fieldType=None, labelWidth=None, fieldWidth=None,
+                          instructions=None,
                           required=None, formPrefill=None, initiallyChecked=None, values=None, labelToRight=None,
                           hintText=None, defaultValue=None, minValue=None, maxValue=None, multiSelect=None,
                           maxLength=None, maskInput=None, visibleLines=None):
@@ -3216,7 +3223,8 @@ class MarketoClient:
         args = {
             'access_token': self.token
         }
-        result = self._api_call('post', self.host + "/rest/asset/v1/file/" + str(id) + "/content.json", args, files=file,
+        result = self._api_call('post', self.host + "/rest/asset/v1/file/" + str(id) + "/content.json", args,
+                                files=file,
                                 filename="file")
         if result is None:
             raise Exception("Empty Response")
@@ -3605,7 +3613,7 @@ class MarketoClient:
             args['status'] = status
         if folderId is not None and folderType is not None:
             args['folder'] = "{'id': " + \
-                str(folderId) + ", 'type': " + folderType + "}"
+                             str(folderId) + ", 'type': " + folderType + "}"
         result_list = []
         offset = 0
         while True:
@@ -3656,7 +3664,8 @@ class MarketoClient:
         args = {
             'access_token': self.token
         }
-        result = self._api_call('post', self.host + "/rest/asset/v1/landingPageTemplate/" + str(id) + "/content.json", args,
+        result = self._api_call('post', self.host + "/rest/asset/v1/landingPageTemplate/" + str(id) + "/content.json",
+                                args,
                                 files=content, filename="content")
         if result is None:
             raise Exception("Empty Response")
@@ -3771,7 +3780,8 @@ class MarketoClient:
 
     # --------- PROGRAM ---------
 
-    def create_program(self, folderId, folderType, name=None, type=None, channel=None, description=None, tags=None, costs=None):
+    def create_program(self, folderId, folderType, name=None, type=None, channel=None, description=None, tags=None,
+                       costs=None):
         self.authenticate()
         if folderId is None:
             raise ValueError(
@@ -3862,7 +3872,7 @@ class MarketoClient:
             raise MarketoException(result['errors'][0])
         return result['result']
 
-    def update_program(self, id, name=None, description=None, tags=None):
+    def update_program(self, id, name=None, description=None, tags=None, startDate=None, endDate=None):
         self.authenticate()
         if id is None:
             raise ValueError("Invalid argument: required argument id is none.")
@@ -3880,6 +3890,11 @@ class MarketoClient:
                 tag_pair = {'tagType': key, 'tagValue': elem}
                 tags_formatted.append(tag_pair)
             data.append(('tags', str(tags_formatted)))
+        if startDate is not None:
+            data.append(('startDate', startDate))
+
+        if endDate is not None:
+            data.append(('endDate', endDate))
         result = self._api_call('post', self.host + "/rest/asset/v1/program/" +
                                 str(id) + ".json", args, data, mode='nojsondumps')
         if result is None:
@@ -4645,7 +4660,7 @@ class MarketoClient:
         if primaryAttributeName is None:
             raise ValueError(
                 "Required argument 'primaryAttributeName' is none.")
-        #if primaryAttributeDescription is None: raise ValueError("Required argument 'primaryAttributeDescription' is none.")
+        # if primaryAttributeDescription is None: raise ValueError("Required argument 'primaryAttributeDescription' is none.")
         args = {
             'access_token': self.token
         }
@@ -4850,13 +4865,21 @@ class MarketoClient:
         assert entity is not None, 'Invalid argument: required fields is none.'
         assert job_id is not None, 'Invalid argument: required fields is none.'
         state_info = {'enqueue': {'suffix': '/enqueue.json', 'method': 'post'}, 'cancel': {
-            'suffix': '/cancel.json', 'method': 'post'}, 'status': {'suffix': '/status.json', 'method': 'get'}, 'file': {'suffix': '/file.json', 'method': 'get'}}
+            'suffix': '/cancel.json', 'method': 'post'}, 'status': {'suffix': '/status.json', 'method': 'get'},
+                      'file': {'suffix': '/file.json', 'method': 'get'}}
         self.authenticate()
         args = {
             'access_token': self.token
         }
+        print('/bulk/v1/{}/export/{}{}'.format(entity, job_id, state_info[state]['suffix']))
+        mode = None
+        if state is 'file':
+            mode = 'nojson'
         result = self._api_call(
-            state_info[state]['method'], self.host + '/bulk/v1/{}/export/{}{}'.format(entity, job_id, state_info[state]['suffix']), args, mode='nojson')
+            state_info[state]['method'],
+            self.host + '/bulk/v1/{}/export/{}{}'.format(entity, job_id, state_info[state]['suffix']), args, mode=mode)
+        print(result)
+        print(type(result))
         if state is 'file' and result.status_code is 200:
             return result.content
         if not result['success']:
@@ -4930,14 +4953,16 @@ class MarketoClient:
             'access_token': self.token
         }
         result = self._api_call(
-            'post', self.host + "/rest/asset/v1/staticList/" + str(staticListId) + ".json", args, data)
+            'post', self.host + "/rest/asset/v1/staticList/" + str(staticListId) + ".json", args, data,
+            mode='nojsondumps')
         if result is None:
             raise Exception("Empty Response")
         if not result['success']:
             raise MarketoException(result['errors'][0])
         return result['result']
 
-    def get_static_lists(self, parentId=None, parentType=None, offset=None, maxReturn=None, earliestUpdatedAt=None, latestUpdatedAt=None):
+    def get_static_lists(self, parentId=None, parentType=None, offset=None, maxReturn=None, earliestUpdatedAt=None,
+                         latestUpdatedAt=None):
         self.authenticate()
         args = {
             'access_token': self.token

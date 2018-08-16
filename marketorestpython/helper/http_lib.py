@@ -60,6 +60,7 @@ class HttpLib:
                     else:
                         return r_json  # this is only for the access token call
             except Exception as e:
+                print(e)
                 print("HTTP Get Exception! Retrying.....")
                 time.sleep(self.sleep_duration)
                 retries += 1
