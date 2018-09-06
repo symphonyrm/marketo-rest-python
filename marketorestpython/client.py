@@ -4844,12 +4844,14 @@ class MarketoClient:
         return result['result']
 
     def _create_bulk_export_job(self, entity, fields, filters, format='CSV', columnHeaderNames=None):
-        assert entity is not None, 'Invalid argument: required fields is none.'
-        assert fields is not None, 'Invalid argument: required fields is none.'
+        assert entity is not None, 'Invalid argument: required entity is none.'
+        # assert fields is not None, 'Invalid argument: required fields is none.'
         assert filters is not None, 'Invalid argument: required filters is none.'
-        data = {'fields': fields, 'format': format, 'filter': filters}
+        data = {'format': format, 'filter': filters}
         if columnHeaderNames is not None:
             data['columnHeaderNames'] = columnHeaderNames
+        if fields is not None:
+            data['fields'] = fields
         self.authenticate()
         args = {
             'access_token': self.token
